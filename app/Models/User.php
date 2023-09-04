@@ -52,7 +52,6 @@ class User extends MongoUser implements JWTSubject, LaravelAuthenticatable
         parent::boot();
 
         static::creating(function ($user) {
-            $user->role='administrator';
             $user->currency = 'USD'; // Moneda por defecto: dólares
             $user->decimals = true; // Decimales por defecto: true
             $user->darkmode = false; // Modo oscuro por defecto: false

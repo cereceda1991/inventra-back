@@ -47,6 +47,7 @@ class AuthController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
+            'role' => 'nullable'
         ]);
     
         if ($validator->fails()) {
@@ -57,12 +58,16 @@ class AuthController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
+    
+        // Asignar el valor por defecto 'administrator' si el campo 'role' está vacío o no se proporciona en la solicitud
+        $user->role = $request->has('role') ? $request->input('role') : 'administrator';
+    
         $user->save();
-
+    
         $token = JWTAuth::fromUser($user);
-
-        return response()->success(['token' => $token,'user' => $user ], 'User successfully registered!');
-    }
+    
+        return response()->success(['token' => $token, 'user' => $user], 'User successfully registered!');
+    }    
     
     public function logout(Request $request)
     {
