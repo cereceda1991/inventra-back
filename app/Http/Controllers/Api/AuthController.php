@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
-
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -40,13 +40,36 @@ class AuthController extends Controller
 
         return response()->success(['token' => $token,'user' => $user ], 'Successful login!');
     }
+
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], Response::HTTP_BAD_REQUEST);
+        }
+    
+        $user = new User;
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        $token = JWTAuth::fromUser($user);
+
+        return response()->success(['token' => $token,'user' => $user ], 'User successfully registered!');
+    }
     
     public function logout(Request $request)
     {
         try {
             JWTAuth::invalidate(JWTAuth::getToken());
             
-            return response()->success([], 'Logout successful');
+            return response()->success('Logout successful');
         } catch (JWTException $e) {
             return response()->json(['error' => 'Failed to sign out'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }

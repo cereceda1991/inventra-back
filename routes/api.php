@@ -17,13 +17,11 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle']);
     Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 
-    // Rutas de login y logout
+    // Rutas de Auth
+    Route::post('auth/register', [AuthController::class, 'register'])->name('register');
     Route::post('auth/login', [AuthController::class, 'login'])->name('login');
     Route::post('auth/logout', [AuthController::class, 'logout'])->name('logout')->middleware('jwt.auth');
     
-    // Ruta de registro de usuarios sin protección del middleware
-    Route::post('users', [UserController::class, 'store'])->name('users.store');
-
     // Ruta para obtener un certificado específico sin el middleware jwt.auth
     Route::get('certificates/{id}', [CertificateController::class, 'show'])->name('certificates.show');
     

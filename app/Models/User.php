@@ -21,7 +21,11 @@ class User extends MongoUser implements JWTSubject, LaravelAuthenticatable
         'name',
         'email',
         'password',
-        'role'
+        'role',
+        'currency',
+        'decimals',
+        'darkmode',
+        'profile'
     ];
 
     /**
@@ -42,6 +46,19 @@ class User extends MongoUser implements JWTSubject, LaravelAuthenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            $user->role='administrator';
+            $user->currency = 'USD'; // Moneda por defecto: dólares
+            $user->decimals = true; // Decimales por defecto: true
+            $user->darkmode = false; // Modo oscuro por defecto: false
+            $user->profile='https://i.ibb.co/Zgq29Gy/profile.png';//Avatar por defecto
+        });
+    }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

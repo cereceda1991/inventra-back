@@ -9,9 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Mail;
-use App\Jobs\SendWelcomeEmail;
-use App\Mail\WelcomeEmail;
 
 class UserController extends Controller
 {
@@ -46,31 +43,6 @@ class UserController extends Controller
         return response()->success($user, 'User found!');
     }
     
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-            'role' => 'nullable',
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], Response::HTTP_BAD_REQUEST);
-        }
-    
-        $user = new User;
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
-        $user->role = $request->role;
-        $user->save();
-
-        $token = JWTAuth::fromUser($user);
-
-        return response()->success(['token' => $token,'user' => $user ], 'User successfully registered!');
-    }
-
     public function update(Request $request, $id)
     {
         try {
@@ -80,19 +52,36 @@ class UserController extends Controller
                 'name' => 'required',
                 'email' => ['required', 'email', Rule::unique('users')->ignore($user)],
                 'password' => 'required|min:6',
-                'address' => 'nullable|string',
+                'role' => 'nullable|string',
+                'currency' => 'nullable|string', // Validación para 'currency'
+                'decimals' => 'nullable|boolean', // Validación para 'decimals'
+                'darkmode' => 'nullable|boolean', // Validación para 'darkmode'
             ]);
     
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()], Response::HTTP_BAD_REQUEST);
             }
     
+            // Actualiza los campos con los valores proporcionados en la solicitud
             $user->name = $request->name;
             $user->email = $request->email;
-            $user->address = $request->address;
+            $user->role = $request->role;
     
             if ($request->has('password')) {
                 $user->password = bcrypt($request->password);
+            }
+    
+            // Actualiza los campos 'currency', 'decimals' y 'darkmode' si se proporcionan
+            if ($request->has('currency')) {
+                $user->currency = $request->currency;
+            }
+    
+            if ($request->has('decimals')) {
+                $user->decimals = $request->decimals;
+            }
+    
+            if ($request->has('darkmode')) {
+                $user->darkmode = $request->darkmode;
             }
     
             $user->save();
@@ -101,7 +90,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'type' => 'error'], 500);
         }
-    }                   
+    }                      
     
     public function destroy($id)
     {
