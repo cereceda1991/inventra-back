@@ -45,4 +45,5 @@ RUN composer install --no-interaction --no-scripts --no-plugins --prefer-dist --
 EXPOSE 80
 
 # Iniciar el servidor web de PHP
-CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=$PORT & php artisan queue:work"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=$PORT"]
+
