@@ -29,9 +29,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 # Copiar los archivos de la aplicación al contenedor
 COPY . .
 
-# Copiar el archivo .env.example como .env
-RUN cp .env.example .env
-
 # Generar la clave de la aplicación
 RUN php artisan key:generate || true
 
