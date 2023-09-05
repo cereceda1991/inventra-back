@@ -19,8 +19,8 @@ RUN docker-php-ext-install pdo_mysql mbstring zip
 # Instalar extensión de OpenSSL para PHP
 RUN apt-get install -y openssl
 
-# Instalar extensión de MongoDB para PHP
-RUN pecl install mongodb && \
+# Instalar extensión de MongoDB para PHP (versión específica 1.13.0)
+RUN pecl install mongodb-1.13.0 && \
     docker-php-ext-enable mongodb
 
 # Instalar Composer
@@ -43,5 +43,3 @@ EXPOSE 80
 
 # Iniciar el servidor web de PHP
 CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=$PORT"]
-
-
