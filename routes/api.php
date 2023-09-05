@@ -21,6 +21,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('auth/register', [AuthController::class, 'register'])->name('register');
     Route::post('auth/login', [AuthController::class, 'login'])->name('login');
     Route::post('auth/logout', [AuthController::class, 'logout'])->name('logout')->middleware('jwt.auth');
+    Route::resource('users', UserController::class)->except(['create', 'edit', 'store']);
     
     // Ruta para obtener un certificado específico sin el middleware jwt.auth
     Route::get('certificates/{id}', [CertificateController::class, 'show'])->name('certificates.show');
@@ -31,7 +32,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('certificates/sendall/{id}',[CertificateController::class,'sendAll']);
         Route::get('certificates/esquema/{id}',[CertificateController::class,'esquema']);
         // Rutas para usuarios
-        Route::resource('users', UserController::class)->except(['create', 'edit', 'store']);
         // Rutas para certificados
         Route::resource('certificates', CertificateController::class)->except(['create', 'edit','show']);
         // Rutas para plantillas

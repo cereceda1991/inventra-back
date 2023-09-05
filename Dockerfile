@@ -1,5 +1,5 @@
 # Usar la imagen base de PHP 8.1
-FROM php:8.1
+FROM php:8.1.17
 
 # Establecer el directorio de trabajo en /var/www
 WORKDIR /var/www
@@ -42,5 +42,6 @@ RUN composer install --no-interaction --no-scripts --no-plugins --prefer-dist --
 EXPOSE 80
 
 # Iniciar el servidor web de PHP
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=$PORT"]
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=$PORT"]
+
 
