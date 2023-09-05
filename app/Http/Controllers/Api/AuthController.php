@@ -60,7 +60,7 @@ class AuthController extends Controller
         $user->password = bcrypt($request->password);
     
         // Asignar el valor por defecto 'administrator' si el campo 'role' está vacío o no se proporciona en la solicitud
-        $user->role = $request->has('role') ? $request->input('role') : 'administrator';
+        $user->role = $request->has('role') ? $request->input('role') : 'Administrator';
     
         $user->save();
     
