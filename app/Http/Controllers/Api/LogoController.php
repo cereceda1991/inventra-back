@@ -19,7 +19,7 @@ class LogoController extends Controller
     
         $logos = Logo::where('id_user', $encryptedId)->get();    
     
-    return response()->success($logos, 'Logos found!');
+    return response()->success($logos, 'Image found!');
     }
 
     public function show($id)
@@ -29,7 +29,7 @@ class LogoController extends Controller
             return response()->success($logo , 'Logo found!');
 
         } catch (\Throwable $th) {
-            return response()->json(['error' => 'Logo not found'], Response::HTTP_NOT_FOUND);
+            return response()->json(['error' => 'Image not found'], Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -50,11 +50,9 @@ class LogoController extends Controller
             $logo = new Logo;
             $logo->urlImg = $image->getSecurePath();
             $logo->publicId = $image->getPublicId();
-            $logo->status = true;
-            $logo->id_user = $encryptedId;
             $logo->save();
     
-            return response()->success([$logo], 'The logo has been added successfully!');
+            return response()->success([$logo], 'The image has been updated successfully!');
     
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
