@@ -31,7 +31,7 @@ class UserController extends Controller
 
         return response()->json($response, Response::HTTP_OK);
     }
-    
+        
     public function show($id)
     {
         $user = User::find($id);
@@ -53,9 +53,9 @@ class UserController extends Controller
                 'email' => ['required', 'email', Rule::unique('users')->ignore($user)],
                 'password' => 'required|min:6',
                 'role' => 'nullable|string',
-                'currency' => 'nullable|string', // Validación para 'currency'
-                'decimals' => 'nullable|boolean', // Validación para 'decimals'
-                'darkmode' => 'nullable|boolean', // Validación para 'darkmode'
+                'currency' => 'nullable|string', 
+                'decimals' => 'nullable|boolean', 
+                'darkmode' => 'nullable|boolean',
             ]);
     
             if ($validator->fails()) {
@@ -90,11 +90,13 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'type' => 'error'], 500);
         }
-    }                      
+    }
     
     public function destroy($id)
     {
-        User::destroy($id);
-        return response()->json(['message' => "Deleted"], Response::HTTP_OK);
+        $user = User::findOrFail($id);
+        $user->delete();
+    
+        return response()->json(['message' => 'User deleted successfully'], Response::HTTP_OK);
     }
 }
