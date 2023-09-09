@@ -51,11 +51,12 @@ class UserController extends Controller
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
                 'email' => ['required', 'email', Rule::unique('users')->ignore($user)],
-                'password' => 'required|min:6',
+                'password' => 'nullable|min:6',
                 'role' => 'nullable|string',
                 'currency' => 'nullable|string', 
                 'decimals' => 'nullable|boolean', 
                 'darkmode' => 'nullable|boolean',
+                'profile'=>'nullable|string',
             ]);
     
             if ($validator->fails()) {
@@ -64,9 +65,7 @@ class UserController extends Controller
     
             // Actualiza los campos con los valores proporcionados en la solicitud
             $user->name = $request->name;
-            $user->email = $request->email;
-            $user->role = $request->role;
-    
+            $user->email = $request->email;    
             if ($request->has('password')) {
                 $user->password = bcrypt($request->password);
             }
@@ -79,9 +78,17 @@ class UserController extends Controller
             if ($request->has('decimals')) {
                 $user->decimals = $request->decimals;
             }
+
+            if ($request->has('role')) {
+                $user->role = $request->role;
+            }
     
             if ($request->has('darkmode')) {
                 $user->darkmode = $request->darkmode;
+            }
+
+            if ($request->has('profile')) {
+                $user->profile = $request->profile;
             }
     
             $user->save();
