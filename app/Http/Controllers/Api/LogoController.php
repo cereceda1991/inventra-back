@@ -36,7 +36,7 @@ class LogoController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'image' => 'required|image',
+            'image_file' => 'required|image',
         ]);
     
         if ($validator->fails()) {
@@ -44,7 +44,7 @@ class LogoController extends Controller
         }
     
         $encryptedId = Auth::user()->getAuthIdentifier();
-        $uploadedFile = $request->file('image');
+        $uploadedFile = $request->file('image_file');
         try {
             $image = Cloudinary::upload($uploadedFile->getRealPath());
             $logo = new Logo;

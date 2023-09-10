@@ -3,12 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\AuthorityController;
 use App\Http\Controllers\Api\LogoController;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\StudentController;
-use App\Http\Controllers\Api\TemplateController;
-use App\Http\Controllers\Api\CertificateController;
+use App\Http\Controllers\Api\ProductController;
 
 Route::group(['prefix' => 'v1'], function () {
 
@@ -18,6 +15,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('auth/logout', [AuthController::class, 'logout'])->name('logout')->middleware('jwt.auth');
     // Rutas para usuarios
     Route::resource('users', UserController::class)->except(['create', 'edit', 'store']);
+    Route::resource('products', ProductController::class)->except(['create', 'edit']);
     
     // Rutas protegidas por el middleware jwt.auth
     Route::group(['middleware' => 'jwt.auth'], function () {

@@ -49,14 +49,13 @@ class UserController extends Controller
             $user = User::findOrFail($id);
     
             $validator = Validator::make($request->all(), [
-                'name' => 'required',
-                'email' => ['required', 'email', Rule::unique('users')->ignore($user)],
+                'email' => ['email', Rule::unique('users')->ignore($user)],
                 'password' => 'nullable|min:6',
                 'role' => 'nullable|string',
-                'currency' => 'nullable|string', 
-                'decimals' => 'nullable|boolean', 
+                'currency' => 'nullable|string',
+                'decimals' => 'nullable|boolean',
                 'darkmode' => 'nullable|boolean',
-                'profile'=>'nullable|string',
+                'profile' => 'nullable|string',
             ]);
     
             if ($validator->fails()) {
@@ -64,8 +63,14 @@ class UserController extends Controller
             }
     
             // Actualiza los campos con los valores proporcionados en la solicitud
-            $user->name = $request->name;
-            $user->email = $request->email;    
+            if ($request->has('name')) {
+                $user->name = $request->name;
+            }
+    
+            if ($request->has('email')) {
+                $user->email = $request->email;
+            }
+    
             if ($request->has('password')) {
                 $user->password = bcrypt($request->password);
             }
@@ -78,7 +83,7 @@ class UserController extends Controller
             if ($request->has('decimals')) {
                 $user->decimals = $request->decimals;
             }
-
+    
             if ($request->has('role')) {
                 $user->role = $request->role;
             }
@@ -86,7 +91,7 @@ class UserController extends Controller
             if ($request->has('darkmode')) {
                 $user->darkmode = $request->darkmode;
             }
-
+    
             if ($request->has('profile')) {
                 $user->profile = $request->profile;
             }
