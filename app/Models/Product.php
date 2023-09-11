@@ -33,5 +33,6 @@ class Product extends Model
     protected $attributes = [
         'stock_min' => 5,
         'stock_max' => 1000,
+        'image_url'=>'https://res.cloudinary.com/dtfjbprru/image/upload/v1694361487/vsikwufi6lupa4clg9m0.png'
     ];
 }

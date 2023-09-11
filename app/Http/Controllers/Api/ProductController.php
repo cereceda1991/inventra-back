@@ -14,57 +14,57 @@ class ProductController extends Controller
     
     public function index()
     {
-        $perPage = 50; // Número de productos por página
-        $products = Product::paginate($perPage);
-    
-        $response = [
-            'status' => 'success',
-            'message' => 'Products found!',
-            'data' => [
-                'products' => $products->items(),
-                'currentPage' => $products->currentPage(),
-                'perPage' => $products->perPage(),
-                'totalPages' => $products->lastPage(),
-                'totalCount' => $products->total(),
-            ],
-        ];
-    
-        return response()->json($response, Response::HTTP_OK);
+    $perPage = 10; // Número de productos por página
+    $products = Product::paginate($perPage);
+
+    $response = [
+        'status' => 'success',
+        'message' => 'Products found!',
+        'data' => [
+            'products' => $products->items(),
+            'currentPage' => $products->currentPage(),
+            'perPage' => $products->perPage(),
+            'totalPages' => $products->lastPage(),
+            'totalCount' => $products->total(),
+        ],
+    ];
+
+    return response()->json($response, Response::HTTP_OK);
     }
 
     public function store(Request $request)
     {
-        // Definir las reglas de validación
-        $rules = [
-            'SKU' => 'required|unique:products',
-            'description' => 'required',
-            'category' => 'required',
-            'unit' => 'required',
-            'stock'=>'required',
-            'image_url' => 'required|url',
-            'price' => 'required|numeric',
-        ];
-    
-        // Validar los datos del formulario
-        $validator = Validator::make($request->all(), $rules);
-    
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], Response::HTTP_BAD_REQUEST);
-        }
-    
-        // Crear un nuevo producto y llenarlo con los datos de la solicitud
-        $product = new Product($request->all());
-        $product->save();
+    // Definir las reglas de validación
+    $rules = [
+        'SKU' => 'required|unique:products',
+        'description' => 'required',
+        'category' => 'required',
+        'unit' => 'required',
+        'stock' => 'required',
+        'image_url' => 'nullable|url',
+        'price' => 'required|numeric',
+    ];
 
-        $response = [
-                    'status' => 'success',
-                    'message' => 'Product created successfully!',
-                    'data' => $product,
-                ];
-    
-        return response()->json($response, Response::HTTP_CREATED);
+    // Validar los datos del formulario
+    $validator = Validator::make($request->all(), $rules);
 
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], Response::HTTP_BAD_REQUEST);
     }
+
+    // Crear un nuevo producto y llenarlo con los datos de la solicitud
+    $product = new Product($request->all());
+    $product->save();
+
+    $response = [
+        'status' => 'success',
+        'message' => 'Product created successfully!',
+        'data' => $product,
+    ];
+
+return response()->json($response, Response::HTTP_CREATED);
+
+}
 
     public function show($id)
     {
